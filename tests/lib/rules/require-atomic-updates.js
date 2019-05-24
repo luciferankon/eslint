@@ -129,6 +129,23 @@ ruleTester.run("require-atomic-updates", rule, {
                     await doElse();
                 }
             }
+        `,
+
+        // https://github.com/eslint/eslint/issues/11723
+        `
+            function get() { return {}; }
+            function update() {}
+            async function foo(bar) {
+                let oldBar = await get(bar.id);
+                let doIt = () => {
+                    bar.visible = true;
+                };
+                if (oldBar) {
+                    bar.installDate = oldBar.installDate;
+                } else {
+                    bar.installDate = new Date();
+                }
+            }
         `
     ],
 
